@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="app.css">
+    <title>vanillaJs board</title>
+</head>
+<body>  
+    
+    <h1>board</h1>
+    <table>
+        <tr style="background-color:antiquewhite">
+            <td id="No">No</td>
+            <td id="title">Title</td>
+            <td id="content">Content</td>
+            <td id="time">Time</td>
+        </tr>
+        <tr id="target"></tr>
+    </table>
+    
+    <button id="createList" onclick="createRowTbl(this, this.id)"> makeList </button>
+    <button id="createList" onclick="createRowPg(this, this.id)"> makeList </button>
+    <form id="mkForm" onsubmit="submitForm(this)" method="GET" style="display:none;" >
+        <p>No</p><p id="no"></p>
+        <p>title</p><input type="text" id="titleInp" placeholder="input title">
+        <p>content</p><textarea id="contentInp" placeholder="input Text"></textarea>
+        
+        
+        <p>datetime</p><input type="datetime-local" id="createTime" value="" >
+        <div id="btnBox">
+            <button type="submit">submit</button>
+            <button type="reset">reset</button>
+            <button type="button" id="delete" onclick="deleteRow()">delete</button>
+        </div>
+    </form>
+    <br>
+    
+    <script src="./app.js"></script>
+    
+</body>
+
+
+</html>
