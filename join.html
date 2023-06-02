@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>join</title>
+    <link rel="stylesheet" href="app.css">
+</head>
+<body>
+    <form id="joinStep1" onsubmit="nextStep(this.id)" method="">
+        <div id="agreeBox">
+            <textarea id="agreeBox"></textarea>
+            <br>
+            <input type="checkbox" id="agreeYn">이용 약관에 동의합니다.
+        </div>
+        <button type="submit">next</button>
+    </form>
+
+    <form id="joinStep2" onsubmit="nextStep(this.id)" method="" style="display: none;">
+        <div id="inpUserInfoBox">
+            <p>ID</p><input type="id" id="inpId" placeholder="input ID">
+            <p>PassWord</p><input type="password" id="inpPw" placeholder="input PassWord">
+            <p>NickName</p><input type="text" id="inpNickname" placeholder="input NickName">
+            <p>Email</p><input type="email" id="inpEmail" placeholder="input Email">
+        </div>
+        <button type="submit">next</button>
+    </form>
+
+    <form id="joinStep3" onsubmit="nextStep(this.id)" method="" style="display: none;">
+        <div id="emailAuthBox">
+            <p>authCode</p><input type="text" id="authCode" placeholder="input code">
+        </div>
+        <button type="submit">join</button>
+    </form>
+    <script src="join.js"></script>
+</body>
+</html>

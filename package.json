@@ -1,0 +1,16 @@
+{
+  "type": "module",
+  "name": "vanillajs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "npx http-server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "nodemailer": "^6.9.3"
+  }
+}

@@ -1,0 +1,25 @@
+body{
+    background-color: beige;
+    text-align: center;
+}
+
+td {
+    width:100px;
+}
+
+table {
+    background-color: white;
+    width: 100%;
+    border: 0;
+}
+
+#target:hover{
+    background-color: antiquewhite;
+    cursor: pointer;
+}
+
+#loginBox{
+    background-color: white;
+    width: 400px;
+    height: 400px;
+}
