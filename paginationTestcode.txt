@@ -1,0 +1,76 @@
+
+function pagination(count) {
+    let pageCnt = 10;
+    let blockCnt = 10;
+    let totalPage = Math.ceil(count / pageCnt);
+    let totalBlock = Math.ceil(totalPage / blockCnt);
+    let pagination = document.getElementById('pagination');
+    let testTable = document.getElementById('listTbl');
+
+
+    let renterTableAndPagination = function(page = 1){
+        renderTable(page);
+        renderPagination(page);
+    };
+
+
+    let renderPagination = function (page) {
+        let block = Math.floor((page-1)/blockCnt)+1;
+        let startPage = ((block-1) * blockCnt)+1;
+        let endPage = ((startPage + blockCnt-1) > totalPage ? totalPage : (startPage + blockCnt-1));
+
+        let paginationHTML = "";
+
+        if(page !== 1) paginationHTML += `<a style='cursor:pointer' class='firstPage'>first</a>`;
+        if(block !== 1) paginationHTML += `<a style='cursor:pointer' class='backPage'>prev</a>`;
+
+        for(let i = 0 ; i <= endPage; i++){
+            paginationHTML += (parseInt(page) === parseInt(i)) ? `| <a style='color:#ff8400'>` + i + `</a> |`:`| <a style='cursor: pointer' class='go_page' data-value=` + i + `>` + i + `</a> |`;
+        }
+
+        if(block < totalBlock) paginationHTML += `<a style='cursor:pointer' class='nextPage'>Next</a>`;
+        if(block < totalPage) paginationHTML += `<a style='cursor:pointer' class='lastPage'>Last</a>`;
+
+        pagination.innerHTML = paginationHTML;
+        addEventPagination(startPage, endPage);
+    };
+
+
+    let addEventPagination = function (startPage, endPage){
+        if(!!document.querySelector('.firstPage')){
+            document.querySelector('.firstPage').addEventListener('click', () => {
+                renterTableAndPagination(1);
+            });
+        }
+
+        if(!!document.querySelector('.backPage')){
+            document.querySelector('.backPage').addEventListener('click', () => {
+                renterTableAndPagination(startPage-1);
+            });
+        }
+
+        document.querySelectorAll('.go_page').forEach(goPage => {
+            goPage.addEventListener('click', e => {
+                renterTableAndPagination(parseInt(e.target.getAttribute('data-value')));
+            });
+        });
+
+        if(!!document.querySelector('.nextPage')){
+            document.querySelector('.nextPage').addEventListener('click', () => {
+                renterTableAndPagination(startPage+1);
+            });
+        }
+
+        if(!!document.querySelector('.lastPage')){
+            document.querySelector('.lastPage').addEventListener('click', () => {
+                renterTableAndPagination(totalPage);
+            });
+        }
+    }
+
+
+    renterTableAndPagination();
+   
+
+    console.log('test',totalBlock);
+}

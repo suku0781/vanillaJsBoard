@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>title</title>
+</head>
+<body>
+    <ul class="discussions__container">
+    </ul>
+   <div class="pagination-block">
+     <span class="pageButton outline-none" id="button_prev">Prev</span>
+     <span id="page_number" class="outline-none"></span>
+     <span class="pageButton outline-none" id="button_next">Next</span>
+   </div>
+   <script>
+    const ul = document.querySelector("ul.discussions__container"); //ul
+    const prevButton = document.getElementById('button_prev'); //prevBtn
+    const nextButton = document.getElementById('button_next'); //nextBtn
+    let pageNumber = document.getElementById('page_number'); //페이지넘버를 담는 변수
+    let current_page = 1; // 현재 시작 페이지 넘버는 1로 지정한다.
+    let records_per_page = 10 // 한 페이지당 보여질 게시글 수
+
+    let pageNumbers = function() {
+        let pageNumber = document.getElementById('page_number');
+        pageNumber.innerHTML = "";
+
+        for(let i = 1; i < numPages() + 1; i++) {
+            // 페이지 수 만큼 innerHTML를 이용해 숫자를 넣어준다.
+            pageNumber.innerHTML += "<span class='clickPageNumber'>" + i + "</span>";
+        }
+    }
+
+    let numPages = function() {
+        //게시글 수를 보여질 게시글 수로 나눈 뒤 올림연산하여 페이지 수를 구한다.
+        return Math.ceil(document.getElementsByTagName('li').length / records_per_page);  
+    }
+
+    let changePage = function(page) {
+        const ul = document.querySelector('ul.discussions__container');
+
+        if (page < 1) {
+            page = 1;
+        } 
+
+        if (page > (numPages() -1)) {
+            page = numPages();
+        }
+
+        ul.innerHTML = "";
+
+        for(var i = (page -1) * records_per_page; i < (page * records_per_page) && i < objJson.length; i++) {
+            ul.innerHTML += "<div class='objectBlock'>" + JSON.parse(localStorage.getItem('board'))[i] + "</div>";
+        }
+        //json파일의 id값이 10번출력됨.
+    }
+
+    let addEventListeners = function() {
+    prevButton.addEventListener('click', prevPage);
+    nextButton.addEventListener('click', nextPage);   
+    }
+
+    let prevPage = function() {
+        if(current_page > 1) {
+        //페이지가 1보다 클때만 작동
+            current_page--;
+            changePage(current_page);
+        }
+    }
+
+
+    let nextPage = function() {
+        if(current_page < numPages()) {
+        //numPages() > 전체페이지수 보다 페이지가 작을때만 작동 
+            current_page++;
+            changePage(current_page);
+        } 
+    }
+
+    //e.target 확인
+    let clickPage = function() {
+        document.addEventListener('click', function(e) {
+        
+            if(e.target.nodeName == "SPAN" && e.target.classList.contains("clickPageNumber")) {
+                //이런방식으로 이벤트 전파를 막을 수도 있다.
+                current_page = e.target.textContent;
+                changePage(current_page);
+            }
+        });
+    } 
+
+
+   </script>
+</body>
+</html>

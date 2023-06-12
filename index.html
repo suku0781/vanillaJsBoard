@@ -6,38 +6,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="app.css">
     <title>vanillaJs board</title>
+    <link >
 </head>
 <body>  
     
     <h1>board</h1>
-    <table>
-        <tr style="background-color:antiquewhite">
-            <td id="No">No</td>
-            <td id="title">Title</td>
-            <td id="content">Content</td>
-            <td id="time">Time</td>
-        </tr>
-        <tr id="target"></tr>
-    </table>
-    
-    <button id="createList" onclick="createRowTbl(this, this.id)"> makeList </button>
-    <button id="createList" onclick="createRowPg(this, this.id)"> makeList </button>
-    <form id="mkForm" onsubmit="submitForm(this)" method="GET" style="display:none;" >
-        <p>No</p><p id="no"></p>
-        <p>title</p><input type="text" id="titleInp" placeholder="input title">
-        <p>content</p><textarea id="contentInp" placeholder="input Text"></textarea>
-        
-        
-        <p>datetime</p><input type="datetime-local" id="createTime" value="" >
-        <div id="btnBox">
-            <button type="submit">submit</button>
-            <button type="reset">reset</button>
-            <button type="button" id="delete" onclick="deleteRow()">delete</button>
+    <span id="whoami"></span>
+    <button id="loginBtn" onclick="loginFunc(this)">login</button>
+    <main>
+        <select id="viewCnt">
+            <option value="10">10개씩 보기</option>
+            <option value="20">20개씩 보기</option>
+            <option value="30">30개씩 보기</option>
+            <option value="40">40개씩 보기</option>
+            <option value="50">50개씩 보기</option>
+        </select>
+        <table id="listTbl">
+            <thead>
+                <tr style="background-color:antiquewhite">
+                    <td id="No">No</td>
+                    <td id="title">Title</td>
+                    <td id="contnet" style="width: 30%;">Content</td>
+                    <td id="nickname">NickName</td>
+                    <td id="time">Time</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="target"></tr>
+                
+            </tbody>
+        </table>
+
+        <div id="pagination-block">
+            <span class="pageButton outline-none" id="button_prev" style="display:none;">&lt;</span>
+            <span class="pageButton" id="page_number"></span>
+            <span class="pageButton outline-none" id="button_next" style="display:none;">&gt;</span>
         </div>
-    </form>
+        <br>
+
+        <button id="createList" onclick="createRowTbl(this, this.id)"> makeList </button>
+        <button id="createList" onclick="createRowPg(this, this.id)"> makeList </button>
+        <form id="mkForm" onsubmit="submitForm(this)" method="GET" style="display:none;" >
+            <p>No</p><p id="no"></p>
+            <p>title</p><input type="text" id="titleInp" placeholder="input title">
+            <p>content</p><textarea id="contentInp" placeholder="input Text"></textarea>
+            
+            <p>writer</p><p id="writer"></p>
+            <p>datetime</p><input type="datetime-local" id="createTime" value="" >
+            <div id="btnBox">
+                <button type="submit">submit</button>
+                <button type="reset">reset</button>
+                <button type="button" id="delete" onclick="deleteRow()">delete</button>
+            </div>
+        </form>
+        
+    </main>
     <br>
     
     <script src="./app.js"></script>
+    <script>
+        
+    </script>
     
 </body>
 

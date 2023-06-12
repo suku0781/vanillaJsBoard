@@ -4,13 +4,23 @@ body{
 }
 
 td {
-    width:100px;
+    width:15%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 table {
+    table-layout: fixed;
     background-color: white;
     width: 100%;
     border: 0;
+    width: 75%;
+    margin-inline: auto
+}
+
+#titleInp {
+    width: 400px;
 }
 
 #target:hover{
@@ -22,4 +32,37 @@ table {
     background-color: white;
     width: 400px;
     height: 400px;
+}
+
+.inpRull{
+    font-size: 15px;
+    color: darkgray;
+}
+
+.usableInpId{
+    font-size: 15px;
+    color: dodgerblue;
+}
+
+#contentInp {
+    width: 400px;
+    height: 130px;
+}
+
+#agreeBox {
+    width: 70%;
+    height: 200px;
+}
+
+.hidden{
+    display: none;
+}
+
+#pagination-block{
+    margin: 20px 0 0 0 ;
+}
+
+.pageButton, .clickPageNumber{
+    padding: 10px ;
+    cursor: pointer;
 }

@@ -8,17 +8,18 @@
     <link rel="stylesheet" href="app.css">
 </head>
 <body>
+    <button onclick="location.href='/'">goto list</button>
     <form onsubmit="login()" method="">
-        <div id="loginBox">
             <label>ID</label><input type="id" id="id"><br>
             <label>PassWord</label><input type="password" id="pw">
             <div id="btnBox">
                 <button type="button" onclick="login()">login</button>
-                <button type="button">forgot password</button>
+                <button type="button" onclick="alert('아이디/비밀번호 찾기 기능 구현예정입니다.')">forgot password</button>
                 <button type="button" onclick="location.href='join.html'">join</button>
             </div>
-        </div>
     </form>
     <script src="./login.js"></script>
 </body>
 </html>
+
+
