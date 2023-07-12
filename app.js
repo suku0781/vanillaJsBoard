@@ -1,160 +1,358 @@
-
-
-let dateTime;
-function createRowTbl(elem, id, cnt) {
-    let mkForm = document.getElementById("mkForm");
+const dateTime = () => {
     let today = new Date();
     let year = today.getFullYear();
     let month = ('0' + (today.getMonth() + 1)).slice(-2);
     let day = ('0' + today.getDate()).slice(-2);
     let hour = today.getHours() < 10 ? '0' + today.getHours(): today.getHours();
     let minutes = today.getMinutes() < 10 ? '0' + today.getMinutes(): today.getMinutes();
-    dateTime = year + '-' + month  + '-' + day + "T" + hour + ":" + minutes ;
+    let second = today.getSeconds() < 10 ? '0' + today.getSeconds(): today.getSeconds();
 
-    document.getElementById("createTime").value = dateTime;
-    if(elem == "update" && id == "target"){
-        console.log(mkForm.style.display, id);
-        if(mkForm.style.display == "none"){
-            mkForm.style.display = "";
-            
-            document.getElementById('createList').innerText = "cancel";
-            document.getElementById('no').innerText = cnt;
-            document.getElementById('titleInp').value = JSON.parse(localStorage.getItem('board'))[cnt][0];
-            document.getElementById('contentInp').value = JSON.parse(localStorage.getItem('board'))[cnt][1];
-            document.getElementById('createTime').value = JSON.parse(localStorage.getItem('board'))[cnt][2];
-            document.getElementById('delete').style.display = "";
-        } else {
-            mkForm.style.display = "none";
-            document.getElementById('createList').innerText = "makeList";
-        }
+    return year + '-' + month  + '-' + day + "T" + hour + ":" + minutes ;
+};
+
+//글쓰기 페이지로 이동(글 수정, 글 조회)
+function createRowPg(postNo) {
+    // debugger
+    let sendData = 'postNo='+postNo;
+    const nowUser = (localStorage.getItem('nowUser')) ? JSON.parse(localStorage.getItem('nowUser')).usrNickName : '';
+    const board = localStorage.getItem('board');
+    
+    if(postNo == undefined){ 
+        sendData = 'newWrite';
+    } 
+
+    if(nowUser && postNo == undefined){ // 글 쓰기
+        sendData = 'newWrite';
+        location.href=`write.html?${sendData}`;
+    }   
+// debugger
+    if(nowUser && JSON.parse(board)[postNo].writer == nowUser){ // 본인 게시글인경우
+        sendData+='/nowUserPost';
+        location.href=`write.html?${sendData}`;
+    } else if(postNo !== undefined) { // 타인 게시글인 경우
+        location.href=`write.html?${sendData}`;
     } else {
-        //makeList버튼 클릭 시 이벤트
-        if(mkForm.style.display == "none"){
-            mkForm.style.display = "";
-            elem.innerText = "cancel";
-            // debugger;
-            if( JSON.parse(localStorage.getItem('board')) == null){
-                document.getElementById('no').innerText = 0;
-            } else {
-                document.getElementById('no').innerText = JSON.parse(localStorage.getItem('board')).length ;
-            }
-            
-            document.getElementById('titleInp').value = "";
-            document.getElementById('contentInp').value = "";
-            document.getElementById('createTime').value = dateTime;
-            document.getElementById('delete').style.display = "none";
-        } else {
-            mkForm.style.display = "none";
-            elem.innerText = "makeList";
-        }
-    }
-    
-}
-
-function createRowPg () {
-    location.href="writeList.html";
-}
-
-let originData = [];
-function submitForm() {
-    let formCnt = document.getElementById('mkForm').children[1].innerText;
-    let title = document.getElementById("titleInp").value;
-    let contents = document.getElementById("contentInp").value;
-    let createTimeDate = document.getElementById("createTime").value;
-    let item = [title, contents, createTimeDate];
-    let oldData = JSON.parse(localStorage.getItem('board'));
-
-    if(localStorage.getItem('board') == null){
-        localStorage.setItem('board', '[]');
+        alert('로그인 후 이용하십시오.')
     }
 
-    if( oldData == null ){
-        console.log("오는지 테스트");
-        originData.push(item);
-        localStorage.setItem('board', JSON.stringify(originData));
-    } else if( oldData[formCnt] ){ // 수정
-        let tmpOldData1 = oldData[formCnt][0];
-        let tmpOldData2 = oldData[formCnt][1];
-        let tmpOldData3 = oldData[formCnt][2];
-
-        oldData[formCnt][0] = title;
-        oldData[formCnt][1] = contents;
-
-        //만약 날짜를 수정했다면 수정된 날짜를 아니면 현재 날짜를 저장
-        (createTimeDate != oldData[formCnt][2]) ? oldData[formCnt][2] = createTimeDate : oldData[formCnt][2] = dateTime;
-        if( tmpOldData1 == oldData[formCnt][0] && tmpOldData2 == oldData[formCnt][1] && tmpOldData3 == oldData[formCnt][2]){
-            alert("수정사항 없음.")
-        } else {
-            if(title == "" || contents == ""){
-                alert("title 혹은 contents 입력사항 없음.");
-                return false;
-            } else {
-                alert("글 수정됨.");
-
-            }
-        }
-        localStorage.setItem('board', JSON.stringify(oldData));
-    } else { // 등록
-        if( title == "" || contents == "" ){
-            alert("title 혹은 contents 입력사항 없음.");
-        } else {    
-            oldData.push(item);
-            alert("글 등록됨.");
-        }
-        // debugger;
-        localStorage.setItem('board', JSON.stringify(oldData));
-    }
-    
-    // debugger;
 }
 
-function deleteRow(cnt) {
-    let target = JSON.parse(localStorage.getItem('board'));
-    let cnt2 = document.getElementById('no').innerText;
-    
-    if(target.length != cnt2){
-        if(confirm("글 삭제?")) {
-            target.splice(cnt2, 1);
-            localStorage.setItem('board', JSON.stringify( target ));
-            location.reload();
-        }
+//로그인 버튼 
+function loginBtn(elem){
+    const nowUser = (localStorage.getItem('nowUser')) ? JSON.parse(localStorage.getItem('nowUser')).usrNickName : '';
+
+    //현재 로그인 유무 확인 후 로그인 페이지 이동 또는 로그아웃
+    if(nowUser == ''){
+        location.href='/login.html';
     } else {
-        alert("실패!");
+        localStorage.setItem('nowUser',''); 
+        location.href='/';
     }
-
 }
 
-function loadItems() {
-    let items = localStorage.getItem('board');
+
+function loadItems(vCnt, srchVal) {
+    console.log(vCnt, srchVal)
+    // debugger
+    const items = JSON.parse(localStorage.getItem('board'))
+    const nowUser = (localStorage.getItem('nowUser')) ? JSON.parse(localStorage.getItem('nowUser')).usrNickName : '';
+    const searchItem = (srchVal) ? decodeURIComponent(srchVal) : '';
+
+    //로그인 되어 있는경우 로그인한 사용자 닉네임, logout버튼 표시 
+    //로그인 되어있지 않은 경우 login버튼만 표시
+    if(nowUser != '' && nowUser != null){
+        document.getElementById('whoami').innerText = nowUser;
+        document.getElementById('whoami').setAttribute('onclick', 'userInfo(this)')
+        document.getElementById('loginBtn').innerText = 'logout';
+    } else {
+        document.getElementById('whoami').innerText = '';
+        document.getElementById('loginBtn').innerText = 'login';
+    }
+
+    //만약 로컬스토리지에 user 키값이 없을 경우 생성함. 관리자 계정과 함께 생성.
+    if(localStorage.getItem('user') == null) {
+        const data = {usrId: "admin", usrPw: "1234", usrNickName: "관리자", usrEmail: "suku0781@gmail.com"};
+        const tmpArr = [];
+        localStorage.setItem('user','[]');
+        tmpArr.push(data);
+        localStorage.setItem('user', JSON.stringify(tmpArr));
+    }
+
+    // 저장된 게시물이 있다면 
     if(items != null) {
-        let parseItems = JSON.parse(items);
-        let html = "";
-        let count = 0;
-        for(let i of parseItems){
-            if(parseItems < 10){
+        //pagination button
+        const prevBtn = document.getElementById('button_prev');
+        const nextBtn = document.getElementById('button_next');
+        
 
-            } else {
-                
-            }
-            console.log(parseItems.length)
-            html += `<tr id="target" onclick="createRowTbl('update', this.id, `+ count +`)">`;
-        
-            html += `<td>`+count+`</td>`;
-            
-            for(let j of i){
-                html += `<td>`+j+`</td>`;
-            }
-            html += `</tr>`;
-            count++;
-        
+
+        let html = "";
+        let pageNumber = document.getElementById('page_number');
+        let currentPage = 1; 
+        let recordsPerPage = (vCnt)? vCnt : 10;
+        let numPages = Math.ceil(JSON.parse(localStorage.getItem('board')).length / recordsPerPage);
+
+        const tbody = document.querySelector('tbody');
+        const srchInfoNotExist = (srchItem) => {
+            document.querySelector('input').value = srchItem;
+            tbody.innerHTML = `<tr><td colspan='4' style='white-space: nowrap;'>입력한 <strong>` + srchItem + `</strong> 의 결과가 존재하지 않습니다.</td></tr>`
+            prevBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+            return false;
         }
 
-        document.getElementById('target').insertAdjacentHTML("afterend",html);
+        //게시글이 20개 이상일 경우 < > 버튼 보이기
+        if(JSON.parse(localStorage.getItem('board')).length > 20){
+            prevBtn.style.display = '';
+            nextBtn.style.display = '';
+        } else {
+            prevBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+        }
+        
+        changePage(1,searchItem); // 첫 로딩할때는 디폴트로 1페이지
+
+        // 수를 클릭할 때 해당 페이지네이션으로 이동
+        function changePage(page,searchItem) {
+            
+            let tmpHtml = "";
+            
+            if(page < 1) page = 1;
+            if(page > numPages-1) page = numPages;
+            
+            tbody.innerHTML = "";
+            html = "";
+
+            //디코딩 되었는지 확인 후 안되어있다면 디코딩 하기
+            if(searchItem !== decodeURIComponent(searchItem) ) searchItem = decodeURIComponent(searchItem);
+
+            // 검색한 경우 
+            if(searchItem){ 
+                let srchItemCount = 0; // 검색한 키워드가 일치하는 게시글 수를 담는 객체
+                let srchIdxArr = [];
+                
+                //입력값과 일치하는 게시글 title 수를 체크 후 srchItemCount 에 담음
+                JSON.parse(localStorage.getItem('board')).forEach((item, idx) => { if(item.title.includes(searchItem)){ srchItemCount++; srchIdxArr.push(idx); } });
+                
+                numPages = Math.ceil(srchItemCount / recordsPerPage);
+
+                // 입력값이 존재하지 않을 경우 '입력한  의 결과가 존재하지 않습니다.' 문구 출력 
+                if(srchIdxArr == '' && srchItemCount == 0) return srchInfoNotExist(searchItem);
+                
+                document.querySelector('input').value = searchItem;
+                
+                for(let i = (page - 1) * recordsPerPage; i < (page * recordsPerPage) ; i++){
+                    let tmpNum = srchIdxArr[i];
+                    if(items[tmpNum]){
+                        // debugger
+                        tmpHtml += `<tr id="target" onclick="">`;
+                        tmpHtml += `<td></td>`;
+                        tmpHtml += `<td id="post" onclick="createRowPg(`+ tmpNum +`)">`+items[tmpNum].title+`</td>`;
+                        tmpHtml += `<td onclick="userInfo(this)" style="cursor:pointer;">`+items[tmpNum].writer+`</td>`;
+                        
+                        //만약 게시글을 작성한 년도가 현재 년도와 같다면 월-일 만 표시
+                        if(items[tmpNum].time.split("T")[0].split("-")[0] == dateTime().split('-')[0]) {
+                            tmpHtml += `<td>`+items[tmpNum].time.split("T")[0].split("-").slice(1).join('.')+`</td>`;
+                        } else {
+                            tmpHtml += `<td>`+items[tmpNum].time.split("T")[0].replaceAll('-', '.')+`</td>`;
+                        }
+                        tmpHtml += `</tr>`;
+
+                        //검색했을 경우 No를 검색 후 결과총 갯수에서 -1 할 수 있게끔 함.
+                        tmpHtml = tmpHtml.slice(0, tmpHtml.indexOf('<td></td>')+4 ) + ( (srchItemCount--) - ((page-1) * recordsPerPage) ) + tmpHtml.slice(tmpHtml.indexOf('<td></td>')+4)
+
+                        //한개 게시글을 html에 넣음.
+                        html += tmpHtml;
+
+                        // 초기화
+                        tmpHtml = '';
+                    }
+                    
+                }
+
+                //검색된 게시글이 20개 이상일 경우에만 < > 버튼 보이기
+                if(srchItemCount > 20){
+                    prevBtn.style.display = '';
+                    nextBtn.style.display = '';
+                } else {
+                    prevBtn.style.display = 'none';
+                    nextBtn.style.display = 'none';
+                }
+                
+            // 검색하지 않은 경우
+            } else { 
+                let itemCount = 0; // 게시글 총 갯수를 담는 객체
+
+                //입력값과 일치하는 게시글 title 수를 체크 후 srchItemCount 에 담음
+                JSON.parse(localStorage.getItem('board')).forEach(() => { itemCount++; });
+                
+
+
+
+                //게시글 수 만큼 반복하여 viewCnt 수만큼 게시글 노출
+                for(let i = (page - 1) * recordsPerPage; i < (page * recordsPerPage) ; i++){
+                    if(items[i]){
+                        tmpHtml += `<tr id="target" onclick="">`;
+                        tmpHtml += `<td>`+ ( (itemCount--) - ((page-1) * recordsPerPage) ) +`</td>`;
+    
+                        for(let item in items[i]){
+                            if(item == 'title'){
+                                tmpHtml += `<td id="post" onclick="createRowPg(`+ i +`)">`+items[i].title+`</td>`;
+                            } else if(item == 'contents'){ 
+                                //목록에서 content 숨김.
+                            } else if(item == 'time'){
+                                //만약 게시글을 작성한 년도가 현재 년도와 같다면 월-일 만 표시
+                                if(items[i].time.split("T")[0].split("-")[0] == dateTime().split('-')[0]) {
+                                    tmpHtml += `<td>`+items[i].time.split("T")[0].split("-").slice(1).join('.')+`</td>`;
+                                } else {
+                                    tmpHtml += `<td>`+items[i].time.split("T")[0].replaceAll('-', '.')+`</td>`;
+                                }
+                                
+                            } else {
+                                tmpHtml += `<td onclick="userInfo(this)" style="cursor:pointer;">`+items[i][item]+`</td>`;
+                            }
+                        }
+                        tmpHtml += `</tr>`;
+                    }
+                }
+                html += tmpHtml;
+            }
+
+            tbody.innerHTML = html;
+        
+            //페이지네이션 숫자 초기화 후 numPages만큼 반복하면서 수를 추가함.
+            pageNumber.innerText = '';
+            // debugger
+            for(let i = 1 ; i <= numPages ; i++){
+                // debugger
+                if(i == currentPage){
+                    pageNumber.innerHTML += `<span class='clickPageNumber' style='text-decoration: underline'>` + i + `</span>`;  
+                } else {
+                    pageNumber.innerHTML += `<span class='clickPageNumber'>` + i + `</span>`;
+                }
+            }
+
+
+        }
+// debugger
+        
+
+        prevBtn.addEventListener('click', () => {
+            if(currentPage > 1){
+                currentPage--;
+                changePage(currentPage);
+            }
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            if(currentPage < numPages){
+                currentPage++;
+                changePage(currentPage);
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if(e.target.nodeName == "SPAN" && e.target.classList.contains("clickPageNumber")){
+                let srchItem = '';
+                // debugger
+                // 검색했을 경우
+                if(location.search){
+                    // debugger
+                    console.log("입력값 만큼 페이지 네이션 다시 로직짜야되는데...");
+                    srchItem = location.search.split('search=')[1];
+
+                }
+
+                // 현재 페이지 넘버가 클릭한 페이지와 다를때만 페이지 이동 할 수 있게 
+                if(currentPage !== Number(e.target.textContent)) {
+                    currentPage = e.target.textContent; 
+                    changePage(currentPage, srchItem);
+                    
+                }
+            }
+        })
+        
+
+       
     }
+
+}
+
+function userInfo(elem) {
+    
+    let sendData = (localStorage.getItem('nowUser') ) ? "readUserInfo="+elem.innerText : "readUserWrited="+elem.innerText;
+
+    //본인 정보조회일 경우
+    if( localStorage.getItem('nowUser') && elem.innerText == JSON.parse(localStorage.getItem('nowUser')).usrNickName) sendData = "myInfo"
+
+    location.href+=`userInfo.html?`+sendData;
 }
 
 function init() {
-    loadItems();
+    // debugger
+    const select = document.querySelector('#viewCnt');
+    
+// debugger
+    // 페이지에 표시된 게시글 수 조정
+    select.addEventListener('change', () => {
+        console.log('viewCnt',viewCnt);
+        loadItems(select.value);
+    });
+
+    if(location.search){
+        let receiveDataValue = location.search.split('search=')[1];
+        loadItems(select.value,receiveDataValue);
+    } else {
+        loadItems();
+
+    }
+    window.addEventListener('hashchange', hashHandler, false);
+    
+
 }
+
+/**
+ * 검색 함수 
+ * 입력값을 sendData에 넣고 페이지를 리로드할때 sendData를 붙여서 
+ * 구성할때 입력값이 포함된 제목의 글만 보일수있도록 함. 
+ * @param {*} el 
+ * @returns 
+ */
+function search(el) {
+    event.preventDefault();
+    // debugger
+    const value = el.children[0].value;
+    const sendData = 'search='+value;
+
+    if(!validationChk(value)){
+        return false;
+    }
+    
+    //입력값이 없을 경우
+    
+
+    return location.href=`?${sendData}`;
+}
+
+function validationChk(srchTxt){
+    if(!srchTxt) {
+        alert("검색어를 입력하십시오."); 
+        return false;
+    }
+    if(srchTxt.length == 1 && ( srchTxt.includes(' ') )){ // validation check 함수 로직 짜야함.(직접)
+        alert("검색어를 입력하십시오.")
+        return false;
+    }
+
+    return true;
+}
+
+//이전 페이지가 로그인 페이지 일 경우 페이지 이동을 막는 함수.
+function hashHandler() {
+    if(document.referrer === "/login.html"){
+        window.location.href="/"
+    }
+}
+
 
 init();

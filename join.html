@@ -8,31 +8,53 @@
     <link rel="stylesheet" href="app.css">
 </head>
 <body>
-    <form id="joinStep1" onsubmit="nextStep(this.id)" method="">
-        <div id="agreeBox">
+    <button id="gotoLoginBtn" onclick="gotoLogin()">go to login</button>
+    <form id="joinStep1" onsubmit="nextStep(this.id)" method="GET" style="text-align: -webkit-center;">
             <textarea id="agreeBox"></textarea>
             <br>
             <input type="checkbox" id="agreeYn">이용 약관에 동의합니다.
-        </div>
-        <button type="submit">next</button>
+            <br/>
+            <button type="submit" id="next1Btn">next</button>
+        
     </form>
 
     <form id="joinStep2" onsubmit="nextStep(this.id)" method="" style="display: none;">
         <div id="inpUserInfoBox">
-            <p>ID</p><input type="id" id="inpId" placeholder="input ID">
-            <p>PassWord</p><input type="password" id="inpPw" placeholder="input PassWord">
-            <p>NickName</p><input type="text" id="inpNickname" placeholder="input NickName">
-            <p>Email</p><input type="email" id="inpEmail" placeholder="input Email">
+            <!-- 아이디  -->
+            <p>ID</p>
+            <input type="id" id="inpId" placeholder="input ID">    
+            <input type="button" value="validation check" onclick="duplChk(this, 0)">
+            <p class="inpRull">아이디는 영문 + 숫자 조합으로 10 ~ 15자리를 사용해야 합니다.</p>
+            <p id="usableInpId" style="color: lightskyblue; display:none;">사용가능한 아이디 입니다. </p>
+            
+            <!-- 비밀번호 -->
+            <p>PassWord</p>
+            <input type="password" id="inpPw" placeholder="input PassWord"><br>
+            <p class="inpRull">비밀번호는 영문 + 숫자 + 특수기호 조합으로 8 ~ 20자리를 사용해야 합니다.</p>
+            <span id="same"></span>
+
+            <!-- 닉네임 -->
+            <p>NickName</p>
+            <input type="text" id="inpNickname" placeholder="input NickName">
+
+
+            <!-- 이메일 -->
+            <p>Email</p>
+            <input type="email" id="inpEmail" placeholder="input Email" onkeydown="validEmail()"><br />
+            <span id="emailText"></span>
         </div>
-        <button type="submit">next</button>
+        <button type="submit" id="next2Btn">next</button>
     </form>
 
     <form id="joinStep3" onsubmit="nextStep(this.id)" method="" style="display: none;">
         <div id="emailAuthBox">
-            <p>authCode</p><input type="text" id="authCode" placeholder="input code">
+            <p>Input Code</p>
+            <input type="text" id="authCode" placeholder="input code" maxlength="6">
+            <p id="timer" style="display: none;"></p><button type="button" id="resetTimer">재전송</button>
         </div>
-        <button type="submit">join</button>
+        <button type="submit" id="joinBtn">join</button>
     </form>
-    <script src="join.js"></script>
+    <script src="./join.js"></script>
+    
 </body>
 </html>
