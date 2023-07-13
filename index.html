@@ -10,28 +10,48 @@
 </head>
 <body>  
     
-    <h1>board</h1>
-    <span id="whoami"></span>
-    <button id="loginBtn" onclick="loginFunc(this)">login</button>
-    <main>
+    <header>
+        <h1 onclick="location.href='/'" style="cursor: pointer;">vanillaJsBoard</h1>
+        
+        <div id="loginBox">
+            <span id="whoami"></span>
+            <button id="loginBtn" onclick="loginBtn(this)">login</button>
+
+        </div>
+
+    </header>
+
+    <div id="displayBox">
         <select id="viewCnt">
             <option value="10">10개씩 보기</option>
             <option value="20">20개씩 보기</option>
-            <option value="30">30개씩 보기</option>
-            <option value="40">40개씩 보기</option>
-            <option value="50">50개씩 보기</option>
         </select>
+       
+        <div class="container">
+            <form id="srchForm" onsubmit="search(this)" method="GET"> 
+                <select id="srchSubject">
+                    <option value="title">글제목 검색</option>
+                    <option value="nickname">닉네임 검색</option>
+                </select>
+                <input id="srchValue" type="text" placeholder="검색어를 입력하십시오." >
+                
+                <button type="submit">submit</button>
+            </form>
+        </div>
+    </div>
+
+    <main>
+
         <table id="listTbl">
             <thead>
-                <tr style="background-color:antiquewhite">
-                    <td id="No">No</td>
-                    <td id="title">Title</td>
-                    <td id="contnet" style="width: 30%;">Content</td>
-                    <td id="nickname">NickName</td>
-                    <td id="time">Time</td>
+                <tr id="listColumn">
+                    <td id="No" style="width: 10%;">No</td>
+                    <td id="title" style="width: 50%;">Title</td>
+                    <td id="nickname" style="width: 20%;">NickName</td>
+                    <td id="time" style="width: 20%;">Time</td>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="list">
                 <tr id="target"></tr>
                 
             </tbody>
@@ -44,31 +64,13 @@
         </div>
         <br>
 
-        <button id="createList" onclick="createRowTbl(this, this.id)"> makeList </button>
-        <button id="createList" onclick="createRowPg(this, this.id)"> makeList </button>
-        <form id="mkForm" onsubmit="submitForm(this)" method="GET" style="display:none;" >
-            <p>No</p><p id="no"></p>
-            <p>title</p><input type="text" id="titleInp" placeholder="input title">
-            <p>content</p><textarea id="contentInp" placeholder="input Text"></textarea>
-            
-            <p>writer</p><p id="writer"></p>
-            <p>datetime</p><input type="datetime-local" id="createTime" value="" >
-            <div id="btnBox">
-                <button type="submit">submit</button>
-                <button type="reset">reset</button>
-                <button type="button" id="delete" onclick="deleteRow()">delete</button>
-            </div>
-        </form>
+        <button id="createList" onclick="createRowPg()"> makeList </button>
         
     </main>
     <br>
-    
-    <script src="./app.js"></script>
-    <script>
-        
-    </script>
-    
+    <script src="./app.js" ></script>
 </body>
 
 
 </html>
+

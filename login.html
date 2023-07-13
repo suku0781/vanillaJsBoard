@@ -6,17 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body>
+<body style="text-align: -webkit-center;">
     <button onclick="location.href='/'">goto list</button>
-    <form onsubmit="login()" method="">
-            <label>ID</label><input type="id" id="id"><br>
-            <label>PassWord</label><input type="password" id="pw">
-            <div id="btnBox">
-                <button type="button" onclick="login()">login</button>
-                <button type="button" onclick="alert('아이디/비밀번호 찾기 기능 구현예정입니다.')">forgot password</button>
-                <button type="button" onclick="location.href='join.html'">join</button>
-            </div>
+    <form onsubmit="login()" style="background-color: white;" id="loginForm">
+        <input type="id" id="id" placeholder="id"><br>
+        <div id="passwordBox">
+            <input type="password" id="pw" placeholder="password">
+            <i id="showPw" class="fa fa-eye fa-lg"></i>
+        </div>
+        <div id="btnBox">
+            <button type="button" onclick="login()">login</button>
+            <button type="button" onclick="findIdPw()">forgot password</button>
+            <button type="button" onclick="location.href='join.html'">join</button>
+        </div>
     </form>
     <script src="./login.js"></script>
 </body>

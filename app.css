@@ -1,6 +1,60 @@
+header{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
 body{
     background-color: beige;
     text-align: center;
+}
+
+table#listTbl, div#userInfoContainer{
+    table-layout: fixed;
+    background-color: white;
+    width: 75%;
+    border: 0;
+    margin-inline: auto;
+    font-size: 12px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+}
+
+table#postCRUDTbl{
+    table-layout: fixed;
+    background-color: white;
+    width: 75%;
+    border: 0;
+    margin-inline: auto;
+
+    
+}
+
+table#postCRUDTbl > thead{ 
+    display: flex; 
+    text-align: left;
+    place-content: space-between;
+}
+
+table#postCRUDTbl > thead > tr{ 
+    width: 200px;
+}
+table#postCRUDTbl > thead > tr > th{ 
+    width: 100px;
+}
+
+#listColumn{
+    background-color:antiquewhite; 
+}
+
+#displayBox{
+    display: flex;
+    justify-content: center;
+}
+
+th{
+    width: 3%;
 }
 
 td {
@@ -10,28 +64,10 @@ td {
     text-overflow: ellipsis;
 }
 
-table {
-    table-layout: fixed;
-    background-color: white;
-    width: 100%;
-    border: 0;
-    width: 75%;
-    margin-inline: auto
-}
-
-#titleInp {
-    width: 400px;
-}
-
-#target:hover{
-    background-color: antiquewhite;
-    cursor: pointer;
-}
-
-#loginBox{
-    background-color: white;
-    width: 400px;
-    height: 400px;
+td#post{
+    text-align: left;
+    cursor:pointer;
+    /* border-bottom: 10px solid #fff; */
 }
 
 .inpRull{
@@ -39,7 +75,7 @@ table {
     color: darkgray;
 }
 
-.usableInpId{
+.usableInpId, #correct{
     font-size: 15px;
     color: dodgerblue;
 }
@@ -65,4 +101,54 @@ table {
 .pageButton, .clickPageNumber{
     padding: 10px ;
     cursor: pointer;
+}
+
+#loginForm{
+    background-color: white;
+    width: 500px;
+    height: 300px;
+    vertical-align: middle;
+    display: table-cell;
+}
+
+#id,#pw,#inpId,#inpPw,#inpNickname,#inpEmail,#authCode{
+    width: 200px;
+    height: 25px;
+    font-size: 20px;
+    font-family: monospace;
+}   
+
+#srchForm > input{
+    width: 200px;
+    height: 25px;
+    font-size: 14px;
+    font-family: monospace;
+}
+
+#srchForm > button {
+    width: 60px;
+    height: 31px;
+    font-size: 12px;
+    font-family: monospace;
+}
+
+#passwordBox {
+    position: relative;
+    padding: 20px;
+
+}
+
+#passwordBox > i{
+    position: absolute;
+    left: 75%;
+    top: 27px;
+    color: lightgray;
+} 
+
+table#userInfoTbl{
+    margin: 25px 0 25px;
+    border-spacing: 0 12px;
+    font-size: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border-collapse: separate;
 }
