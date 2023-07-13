@@ -96,20 +96,21 @@ function userInfo(permission){
             }
         }
         html += '</tr>'
+        html += `<button onclick="changeInfo()">`;
+        
+        (mode == 'edit') ? html += `submit` : html += `editInfo`;
+        html += `</button>`;
+    
+        document.getElementById('userInfoTbl').insertAdjacentHTML("beforeend", html);
+    
+        if(location.search.split('?')[1] == 'edit') showHidePwBtn();
     }
     
-    html += `<button onclick="changeInfo()">`;
-    
-    (mode == 'edit') ? html += `submit` : html += `editInfo`;
-    html += `</button>`;
-
-    document.getElementById('userInfoTbl').insertAdjacentHTML("beforeend", html);
-
-    if(location.search.split('?')[1] == 'edit') showHidePwBtn();
 }
 
-// 사용자가 작성한 게시글, 댓글 정보 출력함수
+// 사용자가 작성한 게시글 출력함수
 function writedInfo(permission){
+
 
 }
 
@@ -153,8 +154,6 @@ function changeInfo() {
                         });
                         localStorage.setItem('board', JSON.stringify(board));
                         
-                        // debugger
-                        
                         localStorage.setItem('nowUser', '');
                         localStorage.setItem('nowUser', JSON.stringify(userData[idx]));
                         
@@ -195,8 +194,6 @@ function showHidePwBtn(){
 function init() {
     const tmpMode = location.search.split('?')[1].split('=')[0];
     let permission = 0; // 0: 로그인 안했을 경우 , 1 : 로그인 후 타인 정보 조회 , 2 : 내정보 조회
-
-
 
     switch(tmpMode){
         case "readUserWrited": // 로그인 안했을 경우
