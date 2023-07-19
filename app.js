@@ -51,9 +51,7 @@ function loginBtn(elem){
 }
 
 
-function loadItems(vCnt, srchVal) {
-    console.log(vCnt, srchVal)
-    // debugger
+function loadItems(vCnt, srchTarget, srchVal) {
     const items = JSON.parse(localStorage.getItem('board'))
     const nowUser = (localStorage.getItem('nowUser')) ? JSON.parse(localStorage.getItem('nowUser')).usrNickName : '';
     const searchItem = (srchVal) ? decodeURIComponent(srchVal) : '';
@@ -83,9 +81,6 @@ function loadItems(vCnt, srchVal) {
         //pagination button
         const prevBtn = document.getElementById('button_prev');
         const nextBtn = document.getElementById('button_next');
-        
-
-
         let html = "";
         let pageNumber = document.getElementById('page_number');
         let currentPage = 1; 
@@ -110,10 +105,10 @@ function loadItems(vCnt, srchVal) {
             nextBtn.style.display = 'none';
         }
         
-        changePage(1,searchItem); // 첫 로딩할때는 디폴트로 1페이지
+        changePage(1, srchTarget, searchItem); // 첫 로딩할때는 디폴트로 1페이지
 
         // 수를 클릭할 때 해당 페이지네이션으로 이동
-        function changePage(page,searchItem) {
+        function changePage(page, srchTarget, searchItem) {
             
             let tmpHtml = "";
             
@@ -122,25 +117,35 @@ function loadItems(vCnt, srchVal) {
             
             tbody.innerHTML = "";
             html = "";
-
-            //디코딩 되었는지 확인 후 안되어있다면 디코딩 하기
-            if(searchItem !== decodeURIComponent(searchItem) ) searchItem = decodeURIComponent(searchItem);
-
+            
             // 검색한 경우 
             if(searchItem){ 
+                //디코딩 되었는지 확인 후 안되어있다면 디코딩 하기
+                if( searchItem !== decodeURIComponent(searchItem) ) searchItem = decodeURIComponent(searchItem);
+
                 let srchItemCount = 0; // 검색한 키워드가 일치하는 게시글 수를 담는 객체
                 let srchIdxArr = [];
                 
                 //입력값과 일치하는 게시글 title 수를 체크 후 srchItemCount 에 담음
-                JSON.parse(localStorage.getItem('board')).forEach((item, idx) => { if(item.title.includes(searchItem)){ srchItemCount++; srchIdxArr.push(idx); } });
+                JSON.parse(localStorage.getItem('board')).forEach((item, idx) => { 
+                    if(srchTarget == 'title' && item.title.includes(searchItem)){
+                        srchItemCount++; 
+                        srchIdxArr.push(idx); 
+
+                    } else if(srchTarget == 'nickname' && item.writer == searchItem){
+                        srchItemCount++; 
+                        srchIdxArr.push(idx); 
+                    }
+                });
                 
                 numPages = Math.ceil(srchItemCount / recordsPerPage);
-
+                
+                document.getElementById('srchSubject').value = srchTarget;
+                document.getElementById('srchValue').value = searchItem;
+                
                 // 입력값이 존재하지 않을 경우 '입력한  의 결과가 존재하지 않습니다.' 문구 출력 
                 if(srchIdxArr == '' && srchItemCount == 0) return srchInfoNotExist(searchItem);
-                
-                document.querySelector('input').value = searchItem;
-                
+
                 for(let i = (page - 1) * recordsPerPage; i < (page * recordsPerPage) ; i++){
                     let tmpNum = srchIdxArr[i];
                     if(items[tmpNum]){
@@ -181,14 +186,8 @@ function loadItems(vCnt, srchVal) {
                 
             // 검색하지 않은 경우
             } else { 
-                let itemCount = 0; // 게시글 총 갯수를 담는 객체
-
-                //입력값과 일치하는 게시글 title 수를 체크 후 srchItemCount 에 담음
-                JSON.parse(localStorage.getItem('board')).forEach(() => { itemCount++; });
+                let itemCount = JSON.parse(localStorage.getItem('board')).length
                 
-
-
-
                 //게시글 수 만큼 반복하여 viewCnt 수만큼 게시글 노출
                 for(let i = (page - 1) * recordsPerPage; i < (page * recordsPerPage) ; i++){
                     if(items[i]){
@@ -234,8 +233,6 @@ function loadItems(vCnt, srchVal) {
 
 
         }
-// debugger
-        
 
         prevBtn.addEventListener('click', () => {
             if(currentPage > 1){
@@ -251,23 +248,17 @@ function loadItems(vCnt, srchVal) {
             }
         });
 
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', (e) => {
             if(e.target.nodeName == "SPAN" && e.target.classList.contains("clickPageNumber")){
                 let srchItem = '';
                 // debugger
                 // 검색했을 경우
-                if(location.search){
-                    // debugger
-                    console.log("입력값 만큼 페이지 네이션 다시 로직짜야되는데...");
-                    srchItem = location.search.split('search=')[1];
-
-                }
+                if(location.search) srchItem = location.search.split('?')[1].split('&')[1].slice(7);
 
                 // 현재 페이지 넘버가 클릭한 페이지와 다를때만 페이지 이동 할 수 있게 
                 if(currentPage !== Number(e.target.textContent)) {
                     currentPage = e.target.textContent; 
-                    changePage(currentPage, srchItem);
-                    
+                    changePage(currentPage, srchTarget, srchItem);
                 }
             }
         })
@@ -281,27 +272,29 @@ function loadItems(vCnt, srchVal) {
 function userInfo(elem) {
     
     let sendData = (localStorage.getItem('nowUser') ) ? "readUserInfo="+elem.innerText : "readUserWrited="+elem.innerText;
-
+    
     //본인 정보조회일 경우
-    if( localStorage.getItem('nowUser') && elem.innerText == JSON.parse(localStorage.getItem('nowUser')).usrNickName) sendData = "myInfo"
+    if( localStorage.getItem('nowUser') && elem.innerText == JSON.parse(localStorage.getItem('nowUser')).usrNickName) sendData = "myInfo";
 
-    location.href+=`userInfo.html?`+sendData;
+    location.href = `userInfo.html?`+sendData;
 }
 
 function init() {
     // debugger
-    const select = document.querySelector('#viewCnt');
+    const viewCount = document.querySelector('#viewCnt');
     
-// debugger
     // 페이지에 표시된 게시글 수 조정
-    select.addEventListener('change', () => {
-        console.log('viewCnt',viewCnt);
-        loadItems(select.value);
+    viewCount.addEventListener('change', () => {
+        // console.log('viewCnt',viewCnt);
+        loadItems(viewCount.value);
     });
 
     if(location.search){
-        let receiveDataValue = location.search.split('search=')[1];
-        loadItems(select.value,receiveDataValue);
+        // const receiveDataValue = location.search.split('search=')[1];
+        const receiveSrchTarget = location.search.split('?')[1].split('&')[0].slice(8); // 글제목 검색, 닉네임 검색 value값
+        const receiveSrchValue = location.search.split('?')[1].split('&')[1].slice(7); // 검색어
+
+        loadItems(viewCount.value,receiveSrchTarget, receiveSrchValue);
     } else {
         loadItems();
 
@@ -318,19 +311,16 @@ function init() {
  * @param {*} el 
  * @returns 
  */
-function search(el) {
+function search() {
     event.preventDefault();
-    // debugger
-    const value = el.children[0].value;
-    const sendData = 'search='+value;
+    const subject = document.getElementById('srchSubject').value;
+    const value = document.getElementById('srchValue').value;
+    const sendData = 'subject='+subject+'&search='+value;
 
     if(!validationChk(value)){
         return false;
     }
     
-    //입력값이 없을 경우
-    
-
     return location.href=`?${sendData}`;
 }
 
