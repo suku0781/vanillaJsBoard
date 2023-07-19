@@ -26,9 +26,14 @@
             <option value="10">10개씩 보기</option>
             <option value="20">20개씩 보기</option>
         </select>
+       
         <div class="container">
             <form id="srchForm" onsubmit="search(this)" method="GET"> 
-                <input type="text" placeholder="검색어를 입력하십시오." >
+                <select id="srchSubject">
+                    <option value="title">글제목 검색</option>
+                    <option value="nickname">닉네임 검색</option>
+                </select>
+                <input id="srchValue" type="text" placeholder="검색어를 입력하십시오." >
                 
                 <button type="submit">submit</button>
             </form>
