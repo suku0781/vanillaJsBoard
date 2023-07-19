@@ -23,14 +23,14 @@ function createRowPg(postNo) {
 
     if(nowUser && postNo == undefined){ // 글 쓰기
         sendData = 'newWrite';
-        location.href=`write.html?${sendData}`;
+        location.href=`write?${sendData}`;
     }   
 // debugger
     if(nowUser && JSON.parse(board)[postNo].writer == nowUser){ // 본인 게시글인경우
         sendData+='/nowUserPost';
-        location.href=`write.html?${sendData}`;
+        location.href=`write?${sendData}`;
     } else if(postNo !== undefined) { // 타인 게시글인 경우
-        location.href=`write.html?${sendData}`;
+        location.href=`write?${sendData}`;
     } else {
         alert('로그인 후 이용하십시오.')
     }
@@ -43,7 +43,7 @@ function loginBtn(elem){
 
     //현재 로그인 유무 확인 후 로그인 페이지 이동 또는 로그아웃
     if(nowUser == ''){
-        location.href='/login.html';
+        location.href='/login';
     } else {
         localStorage.setItem('nowUser',''); 
         location.href='/';
@@ -276,7 +276,7 @@ function userInfo(elem) {
     //본인 정보조회일 경우
     if( localStorage.getItem('nowUser') && elem.innerText == JSON.parse(localStorage.getItem('nowUser')).usrNickName) sendData = "myInfo";
 
-    location.href = `userInfo.html?`+sendData;
+    location.href = `userInfo?`+sendData;
 }
 
 function init() {
@@ -339,7 +339,7 @@ function validationChk(srchTxt){
 
 //이전 페이지가 로그인 페이지 일 경우 페이지 이동을 막는 함수.
 function hashHandler() {
-    if(document.referrer === "/login.html"){
+    if(document.referrer === "/login"){
         window.location.href="/"
     }
 }

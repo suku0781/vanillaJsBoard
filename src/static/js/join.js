@@ -1,15 +1,5 @@
-//회원가입 첫번째의 약관 텍스트를 불러온다.
-let xmlhttp = new XMLHttpRequest();
-xmlhttp.open('GET', './약관.txt', false);
-xmlhttp.send();
-
-//파일 로드 성공 시 파일에서 읽은 텍스트 agreeBox에 담음.
-if(xmlhttp.status == 200) {
-    document.getElementById('agreeBox').value = xmlhttp.responseText;
-}
-
 function gotoLogin() {
-    location.href='login.html'
+    location.href='login'
 }
 
 /**
@@ -66,13 +56,25 @@ function nextStep(id) {
         } else {
             // JSON.parse(localStorage.getItem('user'))[JSON.parse(localStorage.getItem('user')).length-1].authYn = "Y";
             alert('가입되었습니다. 로그인 후 이용해주십시오.');
-            location.href='login.html';
+            location.href='login';
         }
 
     }   
 }
 
 function init(){
+    //회원가입 첫번째의 약관 텍스트를 불러온다.
+    let xmlhttp = new XMLHttpRequest();
+    xmlhttp.open('GET', '/terms', false);
+    xmlhttp.send();
+
+    //파일 로드 성공 시 파일에서 읽은 텍스트 agreeBox에 담음.
+    if(xmlhttp.status == 200) {
+        // debugger
+        document.getElementById('agreeBox').value = xmlhttp.responseText;
+    }
+
+
     nextStep();
 
 }
@@ -289,7 +291,7 @@ function timer() {
                     }
                 })
                 
-                location.href='/login.html';
+                location.href='/login';
 
             }
         }, 1000);

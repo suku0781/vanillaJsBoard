@@ -14,7 +14,7 @@ let oEditors = [];
 nhn.husky.EZCreator.createInIFrame({
     oAppRef: oEditors,
     elPlaceHolder: "contentInp",
-    sSkinURI: "./smarteditor2/dist/SmartEditor2Skin.html",
+    sSkinURI: "/smarteditor2/dist/SmartEditor2Skin.html",
     fCreator: "createSEditor2",
     htParams : { 
         // 툴바 사용 여부 (true:사용/ false:사용하지 않음) 
