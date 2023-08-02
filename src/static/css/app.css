@@ -59,7 +59,7 @@ th{
 
 td {
     width:15%;
-    white-space: nowrap;
+    /* white-space: nowrap; */
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -151,4 +151,41 @@ table#userInfoTbl{
     font-size: 12px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     border-collapse: separate;
+}
+
+h3#commentWriter > a{
+    text-decoration: auto;
+    color: gray;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+dd#commentTarget > div#commentHead > h3#commentWriter > a, div#bigCommentBox > div#commentHead > h3#commentWriter > a{
+    text-decoration: auto;
+    color: gray;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 13px;
+}
+dd#commentTarget > div#commentHead , div#bigCommentBox > div#commentHead {
+    max-width: 12%;
+}
+dd#commentTarget > div#commentHead > p , div#bigCommentBox > div#commentHead > p{
+    margin: 0;
+    font-size: 11px;
+    color: gray;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+dd#commentTarget > div#commentBody, div#bigCommentBox > div#commentBody {
+    max-width: 80%;
+    padding: 0 10px;
+}
+dd#commentTarget > div#commentBody > p , div#commentBody > picture , div#bigCommentBox > div#commentBody{
+    font-size: 15px;
+    color: gray;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+#commentHr{
+    border:0.5px dashed lightgray;
+}
+div > h3 {
+    margin: 0;
 }

@@ -11,29 +11,50 @@ const dateTime = () => {
 };
 
 //글쓰기 페이지로 이동(글 수정, 글 조회)
-function createRowPg(postNo) {
-    // debugger
-    let sendData = 'postNo='+postNo;
+function createRowPg(postUniqNo) {
+    let sendData = 'postUniqNo='+postUniqNo;
     const nowUser = (localStorage.getItem('nowUser')) ? JSON.parse(localStorage.getItem('nowUser')).usrNickName : '';
-    const board = localStorage.getItem('board');
+    const board = JSON.parse(localStorage.getItem('board'));
     
-    if(postNo == undefined){ 
+    if(postUniqNo == undefined){ 
         sendData = 'newWrite';
     } 
 
-    if(nowUser && postNo == undefined){ // 글 쓰기
+    if(nowUser && postUniqNo == undefined){ // 글 쓰기
         sendData = 'newWrite';
         location.href=`write?${sendData}`;
     }   
-// debugger
-    if(nowUser && JSON.parse(board)[postNo].writer == nowUser){ // 본인 게시글인경우
-        sendData+='/nowUserPost';
-        location.href=`write?${sendData}`;
-    } else if(postNo !== undefined) { // 타인 게시글인 경우
-        location.href=`write?${sendData}`;
-    } else {
-        alert('로그인 후 이용하십시오.')
+    // board.forEach((item , idx) => {
+    //     if(item.postUniqNo == postUniqNo) (
+    //         sendData += '/nowUserPost';
+    //         location.href=`write?${sendData}`;
+    //     ) else if(postUniqNo !== undefined) {
+    //         location.href=`write?${sendData}`;
+    //     } else {
+    //         alert("로그인 후 이용하십시오.")
+    //     }
+    // })
+    for(let i = 0 ; i < board.length ; i++){
+        if(board[i].postUniqNo == postUniqNo){
+            sendData += '/nowUserPost';
+            location.href=`write?${sendData}`;
+        } else if(!postUniqNo){
+            location.href=`write?${sendData}`;
+        } else {
+            alert('로그인 후 이용하십시오.')
+        }
+        break
     }
+    // board.forEach( item => {
+    //     if(item.postUniqNo == postUniqNo) {
+    //         sendData += '/nowUserPost';
+    //         location.href=`write?${sendData}`;
+    //     } else if(!postUniqNo){
+    //         location.href=`write?${sendData}`;
+    //     } else {
+    //         alert('로그인 후 이용하십시오.');
+    //     }
+    // })
 
 }
 
@@ -149,7 +170,6 @@ function loadItems(vCnt, srchTarget, srchVal) {
                 for(let i = (page - 1) * recordsPerPage; i < (page * recordsPerPage) ; i++){
                     let tmpNum = srchIdxArr[i];
                     if(items[tmpNum]){
-                        // debugger
                         tmpHtml += `<tr id="target" onclick="">`;
                         tmpHtml += `<td></td>`;
                         tmpHtml += `<td id="post" onclick="createRowPg(`+ tmpNum +`)">`+items[tmpNum].title+`</td>`;
@@ -196,9 +216,7 @@ function loadItems(vCnt, srchTarget, srchVal) {
     
                         for(let item in items[i]){
                             if(item == 'title'){
-                                tmpHtml += `<td id="post" onclick="createRowPg(`+ i +`)">`+items[i].title+`</td>`;
-                            } else if(item == 'contents'){ 
-                                //목록에서 content 숨김.
+                                tmpHtml += `<td id="post" onclick="createRowPg(`+ JSON.parse(localStorage.getItem('board'))[0].postUniqNo +`)">`+items[i].title+`</td>`;
                             } else if(item == 'time'){
                                 //만약 게시글을 작성한 년도가 현재 년도와 같다면 월-일 만 표시
                                 if(items[i].time.split("T")[0].split("-")[0] == dateTime().split('-')[0]) {
@@ -207,7 +225,7 @@ function loadItems(vCnt, srchTarget, srchVal) {
                                     tmpHtml += `<td>`+items[i].time.split("T")[0].replaceAll('-', '.')+`</td>`;
                                 }
                                 
-                            } else {
+                            } else if(item == 'writer') {
                                 tmpHtml += `<td onclick="userInfo(this)" style="cursor:pointer;">`+items[i][item]+`</td>`;
                             }
                         }
@@ -221,9 +239,7 @@ function loadItems(vCnt, srchTarget, srchVal) {
         
             //페이지네이션 숫자 초기화 후 numPages만큼 반복하면서 수를 추가함.
             pageNumber.innerText = '';
-            // debugger
             for(let i = 1 ; i <= numPages ; i++){
-                // debugger
                 if(i == currentPage){
                     pageNumber.innerHTML += `<span class='clickPageNumber' style='text-decoration: underline'>` + i + `</span>`;  
                 } else {
@@ -251,7 +267,6 @@ function loadItems(vCnt, srchTarget, srchVal) {
         document.addEventListener('click', (e) => {
             if(e.target.nodeName == "SPAN" && e.target.classList.contains("clickPageNumber")){
                 let srchItem = '';
-                // debugger
                 // 검색했을 경우
                 if(location.search) srchItem = location.search.split('?')[1].split('&')[1].slice(7);
 
@@ -280,7 +295,6 @@ function userInfo(elem) {
 }
 
 function init() {
-    // debugger
     const viewCount = document.querySelector('#viewCnt');
     
     // 페이지에 표시된 게시글 수 조정

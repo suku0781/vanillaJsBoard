@@ -12,18 +12,21 @@ const dateTime = () => {
 
 function loadUserInfo(permission) {
     const tabs = document.querySelectorAll('ul.tabs li');
-// debugger
+    
     if(permission == 2) userInfo(permission)
     
     writedInfo(permission);
+    writedInfo(permission, 'comment');
     
     for(let tab of tabs){
         tab.addEventListener('click', (event) => {
             let nowTab = document.getElementsByClassName('current')[0].dataset.tab;
             let tabId = event.target.getAttribute('data-tab'); // 클릭한 탭
 
+            
             while(nowTab !== tabId && document.getElementsByClassName('current').length !== 0){
                 document.getElementsByClassName('current')[0].classList.remove('current')
+                
             }
 
             event.target.className += ' current';
@@ -43,7 +46,6 @@ function userInfo(permission){
     
     if(permission > 1 ){
         for(let i = 0 ; i < key.length ; i++){
-            // debugger
             html += '<tr>';
             if(mode == 'edit'){
                 switch(key[i]){
@@ -103,9 +105,11 @@ function userInfo(permission){
 }
 
 // 사용자가 작성한 게시글 출력함수
-function writedInfo(permission){
+function writedInfo(permission, whatsInfo){
     const userNickname = (permission == 2) ? JSON.parse(localStorage.getItem('nowUser')).usrNickName : location.search.split('?')[1].split('=')[1];
-    loadItems(userNickname);
+    
+    loadItems(userNickname, whatsInfo);
+    
 }
 
 function changeInfo() {
@@ -116,11 +120,12 @@ function changeInfo() {
         const userData = JSON.parse(localStorage.getItem('user'));
         const nowUser = JSON.parse(localStorage.getItem('nowUser'));
         const board = JSON.parse(localStorage.getItem('board'));
+
         let inpPw = document.getElementById('inpPw').value
         let inpNickname = document.getElementById('inpNickname').value
         let inpEmail = document.getElementById('inpEmail').value
+
         userData.forEach( (item, idx) => {
-            // debugger
             if(item.usrId == nowUser.usrId ){
                 let validTarget = {};
                 if((inpPw == nowUser.usrPw && inpNickname == nowUser.usrNickName && inpEmail == nowUser.usrEmail)){
@@ -188,8 +193,6 @@ function init() {
 
     switch(tmpMode){
         case "readUserWrited": // 로그인 안했을 경우
-            console.log("로그인 안했음.")
-
             document.querySelectorAll('.current').forEach(item => { // 회원정보탭 가리기
                 item.style.display = 'none';
                 item.classList.remove('current');
@@ -197,7 +200,6 @@ function init() {
             })
         break;
         case "readUserInfo": // 로그인 한 경우
-            console.log("로그인 햇음. ")
             permission = 1;
 
             document.querySelectorAll('.current').forEach(item => {
@@ -210,6 +212,8 @@ function init() {
         case "myInfo":
             console.log("내정보")
             permission = 2;
+
+
         break;
 
         case "edit":
@@ -217,38 +221,53 @@ function init() {
             permission = 2;
         break;
     }
+
     loadUserInfo(permission)
     
 }
 
-
-
 init();
 
-function loadItems(userNickname) {
-    const items = JSON.parse(localStorage.getItem('board'))
+function loadItems(userNickname, whatsInfo) {
+
+    // 로컬스토리지에서 whatsInfo 의 값을 기준으로 가져옴 값이 없읅 경우 "board" 로 가져옴
+    // whatsInfo = whatsInfo||"board";
+    const items =  JSON.parse(localStorage.getItem(whatsInfo||"board"));
     const searchItem = (userNickname) ? decodeURIComponent(userNickname) : '';
+
+    console.log(whatsInfo);
+    console.log(items);
 
     // 저장된 게시물이 있다면 
     if(items != null) {
         //pagination button
-        const prevBtn = document.getElementById('button_prev');
-        const nextBtn = document.getElementById('button_next');
         let html = "";
         let pageNumber = document.getElementById('page_number');
         let currentPage = 1; 
         let recordsPerPage = 10;
         let numPages = Math.ceil(JSON.parse(localStorage.getItem('board')).length / recordsPerPage);
+        const prevBtn = document.getElementById('button_prev');
+        const nextBtn = document.getElementById('button_next');
+        const srchInfoNotExist = (whatsInfo) => {
+            // parameter인 whatsInfo는 댓글기록을 불러올때만 존재함. 그외일 경우 null임.
+            // whatsInfo가 true 일 경우 댓글 정보를 불러옴.
+            if(whatsInfo){
+                document.querySelector('#list').innerHTML = `<tr><td colspan='4' style='white-space: nowrap;'>작성한 게시물이 없습니다.</td></tr>`;
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+            } else {
+                document.querySelector('#commentList').innerHTML = `<tr><td colspan='4' style='white-space: nowrap;'>작성한 댓글이 없습니다.</td></tr>`;
+                (whatsInfo+prevBtn).style.display = 'none';
+                (whatsInfo+nextBtn).style.display = 'none';
+            }
+            
 
-        const srchInfoNotExist = () => {
-            document.querySelector('#list').innerHTML = `<tr><td colspan='4' style='white-space: nowrap;'>게시물이 존재하지 않습니다.</td></tr>`;
-            prevBtn.style.display = 'none';
-            nextBtn.style.display = 'none';
             return false;
-        }
-// debugger
+        };
+
+
         //게시글이 20개 이상일 경우 < > 버튼 보이기
-        if(JSON.parse(localStorage.getItem('board')).length > 20){
+        if(items.length > 20){
             prevBtn.style.display = '';
             nextBtn.style.display = '';
         } else {
@@ -260,8 +279,6 @@ function loadItems(userNickname) {
 
         // 수를 클릭할 때 해당 페이지네이션으로 이동
         function changePage(page, searchItem) {
-            let tmpHtml = "";
-            
             if(page < 1) page = 1;
             if(page > numPages-1) page = numPages;
             
@@ -272,45 +289,72 @@ function loadItems(userNickname) {
 
             let srchItemCount = 0; // 검색한 키워드가 일치하는 게시글 수를 담는 객체
             let srchIdxArr = [];
+
+            debugger
             
             //입력값과 일치하는 게시글 title 수를 체크 후 srchItemCount 에 담음
-            JSON.parse(localStorage.getItem('board')).forEach((item, idx) => { 
-                if(item.writer == searchItem){
-                    srchItemCount++; 
-                    srchIdxArr.push(idx); 
-                }
+            items.forEach((item, idx) => { 
+                    if(location.search.includes('myInfo')){
+                        //작성 글, 댓글 기록 탐색 
+                        if(item.writer == JSON.parse(localStorage.getItem('nowUser')).usrNickName || item.nickname == searchItem){
+                            srchItemCount++; 
+                            srchIdxArr.push(item.postUniqNo||item.postNo); 
+                        }
+                    } else {
+                        if(item.writer == searchItem || item.nickname == searchItem){
+                            srchItemCount++; 
+                            srchIdxArr.push(item.postUniqNo||item.postNo); 
+                        }
+                    }
             });
             
             numPages = Math.ceil(srchItemCount / recordsPerPage);
             
             // 입력값이 존재하지 않을 경우 '입력한  의 결과가 존재하지 않습니다.' 문구 출력 
-            if(srchIdxArr == '' && srchItemCount == 0) return srchInfoNotExist(searchItem);
+            if(srchIdxArr == '' && srchItemCount == 0) {
+                let whatsReturn = '';
+                if(whatsInfo) {
+                    whatsReturn = srchInfoNotExist();
+                } else {
+                    whatsReturn = srchInfoNotExist(whatsInfo);
+                }
+                return whatsReturn;
+            }
 
             for(let i = (page - 1) * recordsPerPage; i < (page * recordsPerPage) ; i++){
-                let tmpNum = srchIdxArr[i];
-                if(items[tmpNum]){
-                    // debugger
-                    tmpHtml += `<tr id="target" onclick="">`;
-                    tmpHtml += `<td></td>`;
-                    tmpHtml += `<td id="post" onclick="createRowPg(`+ tmpNum +`)">`+items[tmpNum].title+`</td>`;
-                    // tmpHtml += `<td onclick="userInfo(this)" style="cursor:pointer;">`+items[tmpNum].writer+`</td>`;
-                    
-                    //만약 게시글을 작성한 년도가 현재 년도와 같다면 월-일 만 표시
-                    if(items[tmpNum].time.split("T")[0].split("-")[0] == dateTime().split('-')[0]) {
-                        tmpHtml += `<td>`+items[tmpNum].time.split("T")[0].split("-").slice(1).join('.')+`</td>`;
-                    } else {
-                        tmpHtml += `<td>`+items[tmpNum].time.split("T")[0].replaceAll('-', '.')+`</td>`;
+                let tmpNum = srchIdxArr.shift();
+                for(let j = 0 ; j < items.length ; j++){
+
+                    if(whatsInfo == "comment" ? (tmpNum && items[j].postNo == tmpNum) : (tmpNum && items[j].postUniqNo == tmpNum) ){
+                        let tmpHtml = "";
+                        tmpHtml += `<tr id="target" onclick="">`;
+                        tmpHtml += `<td></td>`;
+                        console.log(whatsInfo);
+                        
+                        if(whatsInfo){ // 작성댓글 클릭 시 이동하는 페이지 
+                            tmpHtml += `<td id="post" onclick="createRowPg(`+ tmpNum +`, 'comment')">`+ items[j].content +`</td>`;
+                        }else { // 작성글 클릭 시 이동하는 페이지 
+                            tmpHtml += `<td id="post" onclick="createRowPg(`+ tmpNum +`)">`+ items[j].title +`</td>`;
+                        }
+                        
+                        if(items[j].time.split("T")[0].split("-")[0] == dateTime().split('-')[0]) {
+                            tmpHtml += `<td>`+items[j].time.split("T")[0].split("-").slice(1).join('.')+`</td>`;
+                        } else {
+                            tmpHtml += `<td>`+items[j].time.split("T")[0].replaceAll('-', '.')+`</td>`;
+                        }
+                        tmpHtml += `</tr>`;
+    
+                        if(whatsInfo){
+                            tmpHtml = tmpHtml.slice(0, tmpHtml.indexOf('<td></td>')+4 ) + ( items[j].commentNumber ) + tmpHtml.slice(tmpHtml.indexOf('<td></td>')+4)
+                        } else {
+                            //검색했을 경우 No를 검색 후 결과총 갯수에서 -1 할 수 있게끔 함.
+                            tmpHtml = tmpHtml.slice(0, tmpHtml.indexOf('<td></td>')+4 ) + ( (srchItemCount--) - ((page-1) * recordsPerPage) ) + tmpHtml.slice(tmpHtml.indexOf('<td></td>')+4)
+    
+                        }
+    
+                        //한개 게시글을 html에 넣음.
+                        html += tmpHtml;
                     }
-                    tmpHtml += `</tr>`;
-
-                    //검색했을 경우 No를 검색 후 결과총 갯수에서 -1 할 수 있게끔 함.
-                    tmpHtml = tmpHtml.slice(0, tmpHtml.indexOf('<td></td>')+4 ) + ( (srchItemCount--) - ((page-1) * recordsPerPage) ) + tmpHtml.slice(tmpHtml.indexOf('<td></td>')+4)
-
-                    //한개 게시글을 html에 넣음.
-                    html += tmpHtml;
-
-                    // 초기화
-                    tmpHtml = '';
                 }
                 
             }
@@ -324,7 +368,12 @@ function loadItems(userNickname) {
                 nextBtn.style.display = 'none';
             }
                 
-            document.querySelector('#list').innerHTML = html;
+            if(whatsInfo) {
+                document.querySelector('#commentList').innerHTML = html   
+            } else {
+                document.querySelector('#list').innerHTML = html;
+            }
+            
         
             //페이지네이션 숫자 초기화 후 numPages만큼 반복하면서 수를 추가함.
             pageNumber.innerText = '';
@@ -359,7 +408,6 @@ function loadItems(userNickname) {
                 // 현재 페이지 넘버가 클릭한 페이지와 다를때만 페이지 이동 할 수 있게 
                 if(currentPage !== Number(e.target.textContent)) {
                     currentPage = e.target.textContent; 
-                    // debugger
                     changePage(currentPage, userNickname);
                 }
             }
@@ -372,18 +420,45 @@ function loadItems(userNickname) {
 }
 
 //글쓰기 페이지로 이동(글 수정, 글 조회)
-function createRowPg(postNo) {
-    // debugger
-    let sendData = 'postNo='+postNo;
-    const nowUser = (localStorage.getItem('nowUser')) ? JSON.parse(localStorage.getItem('nowUser')).usrNickName : '';
+function createRowPg(postUniqNo, whatsInfo) {
+    
+    // const nowUser = (localStorage.getItem('nowUser')) ? JSON.parse(localStorage.getItem('nowUser')).usrNickName : '';
+    const nowUser = JSON.parse((localStorage.getItem('nowUser')))||'';
     const board = localStorage.getItem('board');
+    let sendData = 'postUniqNo=' + postUniqNo;
 
-    if(nowUser && JSON.parse(board)[postNo].writer == nowUser){ // 본인 게시글인경우
-        sendData+='/nowUserPost';
-        location.href=`write.html?${sendData}`;
-    } else if(postNo !== undefined) { // 타인 게시글인 경우
-        location.href=`write.html?${sendData}`;
-    } 
+    JSON.parse(board).forEach( (item, idx) => {
+        if(nowUser && JSON.parse(board)[idx].writer == nowUser){
+            sendData+='/nowUserPost';
+        } else if(JSON.parse(board)[idx].postUniqNo !== undefined){
+            location.href=`write?${sendData}`;
+        }
+    })
+
+     
+
+
+
+    // for(let i = 0 ; i < JSON.parse(board).length ; i++) {
+    //     if(whatsInfo){
+    //         let sendData = 'postUniqNo=' + postUniqNo;
+    //         if(nowUser && JSON.parse(board)[i].writer == nowUser){
+    //             sendData+='/nowUserPost';
+    //         } else if(JSON.parse(board)[i].postUniqNo !== undefined){
+    //             location.href=`write?${sendData}`;
+    //         } 
+
+    //     }else {
+    //         let sendData = 'postUniqNo=' + postUniqNo;
+    //         if(nowUser && JSON.parse(board)[i].writer == nowUser){
+    //             sendData+='/nowUserPost';
+    //         } else if(JSON.parse(board)[i].postUniqNo !== undefined){
+    //             location.href=`write?${sendData}`;
+    //         } 
+    //     }
+        
+    //     break;
+    // }
 
 }
 

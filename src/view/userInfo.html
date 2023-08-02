@@ -79,7 +79,25 @@
             </div>
 
             <div id="writingCommentTab" class="tab-content">
-                test4
+                <table id="listTbl">
+                    <thead>
+                        <tr id="listColumn">
+                            <td id="No" style="width: 10%;">PostNumber</td>
+                            <td id="title" style="width: 50%;">Comment</td>
+                            <!-- <td id="nickname" style="width: 20%;">NickName</td> -->
+                            <td id="time" style="width: 20%;">Time</td>
+                        </tr>
+                    </thead>
+                    <tbody id="commentList">
+                        <tr id="target"></tr>
+                        
+                    </tbody>
+                </table>
+                <div id="pagination-block">
+                <span class="pageButton outline-none" id="comment_button_prev" style="display:none;">&lt;</span>
+                <span class="pageButton" id="comment_page_number"></span>
+                <span class="pageButton outline-none" id="comment_button_next" style="display:none;">&gt;</span>
+                </div>
             </div>
 
             <div id="scrapTab" class="tab-content">

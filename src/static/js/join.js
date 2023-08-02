@@ -54,7 +54,6 @@ function nextStep(id) {
         } else if(document.getElementById('correct') == null) {
             alert('인증코드가 일치하지 않습니다.');
         } else {
-            // JSON.parse(localStorage.getItem('user'))[JSON.parse(localStorage.getItem('user')).length-1].authYn = "Y";
             alert('가입되었습니다. 로그인 후 이용해주십시오.');
             location.href='login';
         }

@@ -34,7 +34,22 @@
                         <textarea name="contentInp" id="contentInp" rows="10" cols="100" placeholder="input Text" style="width: 100%;"></textarea>
                     </td>
                 </tr>
+                <br>
+                <tr id="comment">
+                    <th id="commentLength">댓글()</th>
+                    <td style="display: table-row;">
+                        <dl>
+                            <div id="inpCommentBox" style="justify-content: center; display: flex;"> 
+                                <textarea id="commentValue" type="text" placeholder="input Comment" escapeXml="false" style="width: 90%; resize: none;"></textarea>
+                                <button type="button" onclick="submitComment(this)">submit</button>
+                            </div>
+                            <dd id="commentTarget"></dd>
+                        </dl>
+                    </td>
+                </tr>
             </tbody>
+            
+
         </table>
         <div id="btnBox">
             <button type="submit">submit</button>
